@@ -1,7 +1,7 @@
 // Implement "register", "login"
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import pool from '../db';
+import pool from '../db/index.js';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -98,4 +98,4 @@ const loginUser = async (req, res, next) => {
 }
 
 
-module.exports = { registerUser, loginUser};
+export { registerUser, loginUser};

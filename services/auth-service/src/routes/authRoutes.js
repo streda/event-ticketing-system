@@ -1,6 +1,6 @@
 // Define Express routes. (POST /register and POST /login)
 import express from 'express';
-import {registerUser, loginUser} from '../controllers/authController'
+import {registerUser, loginUser} from '../controllers/authController.js'
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ router.post('/register', registerUser);
 
 router.post('/login', loginUser);
 
-router.get('/me', authenticateTokenMiddleware, getUserProfile);
+// router.get('/me', authenticateTokenMiddleware, getUserProfile);
 
 
-module.exports = router;
+export default router;

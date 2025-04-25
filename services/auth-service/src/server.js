@@ -1,11 +1,13 @@
+// Basic Express app setup, use routes. Adds basic error handling middleware.
+import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 
 dotenv.config();
 
-import authRoutes from './routes/authRoutes';
-import {connectDB} from './db'
+import authRoutes from './routes/authRoutes.js';
+import pool, {connectDB} from './db/index.js'
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -27,11 +29,17 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, async() => {
     try {
-        await connectDB(),
-        console.log('Database connected successfully.');
+        await connectDB();
+        // --- Get database name from pool options ---
+        // The pool object holds the configuration it used, including the database name
+        const connectedDbName = pool.options.database || '[default/unknown]'; // Adding fallback in case
+        // console.log('Database connected successfully.');
+        console.log(`Database connection pool established successfully to '${connectedDbName}'.`);
         console.log(`Auth Service listening on port ${PORT}`);
   } catch (error) {
-    console.error('Failed to connect to the database:', error);
+    // console.error('Failed to connect to the database:', error);
+    // Adding DB name to error message too
+    const targetDbName = pool?.options?.database || '[configured database]'; // Using optional chaining in case pool isn't fully formed on error
     process.exit(1); // Exit if DB connection fails on startup
   }
 });
