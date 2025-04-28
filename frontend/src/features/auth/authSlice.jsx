@@ -3,7 +3,7 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 
 import * as authApi from '../../services/authApi';
-import { act } from 'react';
+// import { act } from 'react';
 
 export const loginUser = createAsyncThunk(
     'auth/loginUser', async (credentials, {rejectWithValue}) =>{

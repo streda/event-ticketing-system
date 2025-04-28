@@ -3,10 +3,14 @@ import pg from 'pg';
 
 const { Pool } = pg; 
 
+// ---> DEBUG: Log the value RIGHT BEFORE creating the Pool <---
+console.log('[db/index.js] Reading process.env.DATABASE_URL:', process.env.DATABASE_URL);
+// --- END DEBUG ---
+
 // Configuring the connection pool using environment variables
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    // May be I should Add SSL configuration for my database
+    // I will add SSL configuration for my database next
     // ssl: {
     //   rejectUnauthorized: false 
     // }

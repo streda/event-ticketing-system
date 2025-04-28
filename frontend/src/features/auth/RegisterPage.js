@@ -1,1 +1,0 @@
-// Pages using the forms and dispatching Redux thunks.

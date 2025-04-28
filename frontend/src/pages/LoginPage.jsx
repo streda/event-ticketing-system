@@ -2,8 +2,8 @@
 import React, { useEffect } from "react";
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
-import LoginForm from "../../components/LoginForm";
-import {loginUser, resetAuthStatus} from './authSlice'
+import LoginForm from "../components/auth/LoginForm";
+import {loginUser, resetAuthStatus} from '../features/auth/authSlice'
 
 function LoginPage() {
     const dispatch = useDispatch();
@@ -20,7 +20,6 @@ function LoginPage() {
             dispatch(resetAuthStatus());
             navigate('/');
         }
-        return () => {dispatch(clearAuthError());}
     }, [status, token, navigate, dispatch]);
 
     useEffect(() => {

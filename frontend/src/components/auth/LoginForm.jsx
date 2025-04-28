@@ -1,4 +1,4 @@
-// frontend/src/components/LoginForm.js
+// frontend/src/components/auth/LoginForm.js
 
 import React, {useState} from 'react'
 
