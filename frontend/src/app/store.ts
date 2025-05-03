@@ -8,3 +8,7 @@ export const store = configureStore({
     // I will add other reducers here later (e.g., events, bookings)
   },
 });
+
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

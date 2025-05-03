@@ -1,8 +1,21 @@
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom'; 
+import { Link as RouterLink, useNavigate } from 'react-router-dom'; 
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../features/auth/authSlice';
+import type { RootState, AppDispatch } from '../../app/store'; 
 
 function NavBar() {
-  // I will Implement show/hide based on auth state later
+    // ---> Get state and dispatch <---
+    const { token } = useSelector((state: RootState) => state.auth); 
+    const dispatch: AppDispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        dispatch(logout());
+        // Navigate to home page after logout
+        navigate('/'); 
+    };
+
   return (
     <AppBar position="static">
       <Toolbar>
@@ -10,10 +23,19 @@ function NavBar() {
           EventLite
         </Typography>
         <Box>
-          <Button color="inherit" component={RouterLink} to="/">Home</Button>
-          <Button color="inherit" component={RouterLink} to="/login">Login</Button>
-          <Button color="inherit" component={RouterLink} to="/register">Register</Button>
-          {/* I will add Logout button later */}
+          {/* Always show Home */}
+          <Button color="inherit" component={RouterLink} to="/">Home</Button> 
+           {/* Conditionally shows Login, Register OR Logout */}
+           {
+            token ? (
+              <Button color='inherit' onClick={handleLogout}>Logout</Button>
+            ):(
+              <>
+                <Button color="inherit" component={RouterLink} to="/login">Login</Button>
+                <Button color="inherit" component={RouterLink} to="/register">Register</Button>
+              </>
+            )
+           }
         </Box>
       </Toolbar>
     </AppBar>

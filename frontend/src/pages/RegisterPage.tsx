@@ -32,9 +32,9 @@ function RegisterPage() {
         if (status === 'succeeded' && !error && !token) { // Check Redux status
             console.log('Registration successful, redirecting to login...');
             setRegistrationSuccess(true); 
-
             timerId = setTimeout(() => {
                 navigate('/login');
+                // Calling dispatch here fixes redirection to HomePage 
                 dispatch(resetAuthStatus()); // Reset Redux status immediately
         
             }, 1500); 
