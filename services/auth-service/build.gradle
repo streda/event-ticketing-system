@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.5'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.eventlite'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web' // For Spring Web (REST controllers)
+    implementation 'org.springframework.boot:spring-boot-starter-security' // For Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // For Spring Data JPA (database interaction)
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // For validation annotations (@Valid, @NotNull etc)
+
+    runtimeOnly 'org.postgresql:postgresql' // PostgreSQL JDBC Driver (needed only at runtime)
+
+    compileOnly 'org.projectlombok:lombok' // Lombok (needed only during compilation)
+    annotationProcessor 'org.projectlombok:lombok' // Lombok annotation processor
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
