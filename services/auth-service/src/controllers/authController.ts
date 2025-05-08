@@ -13,6 +13,7 @@ if(!JWT_SECRET){
 // Register User
 interface RegisterUserRequest extends Request {
     body: {
+        name: string;
         email: string;
         password: string;
     };
@@ -30,7 +31,12 @@ interface RegisterUserResponse extends Response {
 }
 
 const registerUser = async (req: RegisterUserRequest, res: RegisterUserResponse, next: NextFunction): Promise<void> => {
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
+
+    if (!name) {
+        res.status(400).json({ message: 'Name is required' });
+        return Promise.resolve();
+    }
 
     if (!email || !password) {
         res.status(400).json({ message: 'Email and password are required;.' });
@@ -52,8 +58,8 @@ const registerUser = async (req: RegisterUserRequest, res: RegisterUserResponse,
         const passwordHash = await bcrypt.hash(password, salt);
 
         const newUser = await pool.query(
-           'INSERT INTO auth_schema.users (email, password_hash) VALUES ($1, $2) RETURNING id, email, created_at',
-            [email, passwordHash]
+           'INSERT INTO auth_schema.users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, name, email, created_at',
+            [name, email, passwordHash]
         );
 
         console.log(`User registered: ${newUser.rows[0].email}`);
@@ -82,6 +88,7 @@ interface LoginUserResponse extends Response {
         user?: {
             id: number;
             email: string;
+            name: string;
         };
     }) => this;
 }
@@ -114,18 +121,20 @@ const loginUser = async (req: LoginUserRequest, res: LoginUserResponse, next: Ne
         const payload = {
             userId: user.id,
             email: user.email,
+            name: user.name,
         };
 
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
 
         console.log(`User logged in: ${user.email}`);
-
+        console.log(`[AUTH_SERVICE] Login success for ${user.email}. Preparing to send 200 OK response with token.`);
         res.status(200).json({
             message: 'Successful login.',
             token: token,
             user: {
                 id: user.id,
                 email: user.email,
+                name: user.name,
             },
         });
 

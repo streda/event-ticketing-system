@@ -1,3 +1,55 @@
+// // services/auth-service/src/server.ts
+
+// process.on('unhandledRejection', (reason, promise) => {
+//   console.error('!!! AUTH_SERVICE: Unhandled Rejection at:', promise, 'reason:', reason);
+// });
+
+// process.on('uncaughtException', (err, origin) => {
+//   console.error('!!! AUTH_SERVICE: Uncaught Exception:', err, 'Origin:', origin);
+//   process.exit(1); 
+// });
+
+
+// import 'dotenv/config';
+// import express, { Express, Request, Response, NextFunction } from 'express';
+
+// const app: Express = express();
+// const portString: string = process.env.PORT || '3001';
+// const PORT: number = parseInt(portString, 10);
+
+
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//     console.log(`[AUTH_SERVICE] Test: Received request: ${req.method} ${req.originalUrl}`);
+//     next();
+// });
+
+// app.post('/login', (req: Request, res: Response) => { 
+//     console.log('[AUTH_SERVICE] Test: /login route hit!');
+//     res.status(200).json({ message: 'Auth service /login POST endpoint reached (test)' });
+// });
+
+// app.get('/health', (req: Request, res: Response) => {
+//     console.log('[AUTH_SERVICE] Test: /health route hit!');
+//     res.status(200).send('Auth Service OK (test)');
+// });
+
+
+
+// const startServer = async (): Promise<void> => {
+//     try {
+//         console.log(`[AUTH_SERVICE] Attempting to listen on port ${PORT}...`);
+//         app.listen(PORT, () => {
+//             console.log(`${process.env.SERVICE_NAME || 'Auth Service'} listening on port ${PORT} (minimal test mode)`);
+//         });
+
+//     } catch (error: any) {
+//         console.error(`[AUTH_SERVICE] Failed to start server:`, error); 
+//         process.exit(1); 
+//     }
+// };
+
+// startServer();
+
 // ---> LOAD ENVIRONMENT VARIABLES FIRST <---
 import 'dotenv/config'; 
 
@@ -10,6 +62,11 @@ import authRoutes from './routes/authRoutes';
 // Explicitly type the app instance (optional but good practice)
 const app: Express = express(); 
 
+app.use((req: Request, res: Response, next: NextFunction) => {
+    console.log(`[AUTH_SERVICE] Received request: ${req.method} ${req.originalUrl}`);
+    next();
+});
+
 // Treating PORT as a number for listen
 // process.env variables are strings or undefined
 const portString: string = process.env.PORT || '3001'; // Default to string '3001'
@@ -18,6 +75,13 @@ const PORT: number = parseInt(portString, 10); // Parse to number
 // ---> Register Global Middlewares <---
 app.use(cors());
 app.use(express.json());
+
+// Debugging error
+app.use((req: Request, res: Response, next: NextFunction) => {
+    console.log(`[AUTH_SERVICE] After express.json(). Request body:`, req.body);
+    next();
+});
+
 app.use(express.urlencoded({ extended: true })); 
 
 // ---> Routes <---
@@ -79,6 +143,7 @@ const startServer = async (): Promise<void> => { // Adding return type Promise<v
         console.log(`Database connection pool established successfully (Targeting: '${dbNameForLog}' based on ENV).`);
         
         // ---> Single app.listen call inside the function <---
+        console.log(`[AUTH_SERVICE] Attempting to listen on port ${PORT}...`);
         app.listen(PORT, () => {
             // Uses the SERVICE_NAME from env if available
             console.log(`${process.env.SERVICE_NAME || 'Auth Service'} listening on port ${PORT}`);
