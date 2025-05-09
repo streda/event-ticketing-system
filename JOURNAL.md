@@ -50,3 +50,22 @@
 *   **Status:** Core authentication flow (Register -> Redirect -> Login -> Redirect -> Logout) is working end-to-end via the UI, communicating correctly with the `auth-service` backend. Ready to proceed to API Gateway implementation.
 
 ---
+
+**Thu May 8, 2025 (Switching to Spring Boot for Backend)** 
+
+*   **Goal:** Switch backend implementation from Node.js/TypeScript to Java/Spring Boot for `auth-service`. Setup initial Spring Boot project structure.
+*   **Actions:**
+    *   **Preserved Node.js Version:** Created a new branch `feature/node-backend` from `main` to archive the working (but with proxy issue) Node.js implementation. Pushed this branch to origin.
+    *   **Switched to `main` Branch:** Ensured working branch is `main`.
+    *   **Cleaned Up Node.js Services:** Removed tracked files for `auth-service`, `booking-service`, `event-service`, `notification-service`, `payment-service` from the `main` branch using `git rm -rf`. Manually deleted remaining untracked files (like `services/auth-service/src/models`). Committed the removal. Pushed the cleanup commit to `origin/main`.
+    *   **Generated Spring Boot Project:** Used IntelliJ IDEA's Spring Initializr (which uses start.spring.io) to generate a new Gradle-based Spring Boot project for `auth-service`.
+        *   **Configuration:** Java 17, Group: `com.eventlite`, Artifact: `auth-service`, Packaging: Jar.
+        *   **Initial Dependencies:** Added `Spring Web`, `Spring Security`, `Spring Data JPA`, `PostgreSQL Driver`, `Lombok`, `Validation`. *(Self-correction: Initially forgot dependencies, added them manually to `build.gradle` and reloaded Gradle project).*
+    *   **Project Placement:** Corrected initial nested directory structure. Moved the generated Spring Boot project files (`build.gradle`, `src/`, `gradlew`, etc.) directly into the `Event-Ticketing-System/services/auth-service/` directory.
+    *   **Updated Root `.gitignore`:** Merged common Java/Gradle ignore patterns into the main project `.gitignore` file.
+    *   **Configured IntelliJ:** Fixed "Invalid VCS root mapping" error by removing the incorrect parent directory mapping in IntelliJ's Version Control settings. Configured IntelliJ to recognize and use the installed JDK 17. Enabled Annotation Processing for Lombok.
+    *   **Created `User` Entity:** Defined the `User.java` class in `src/main/java/com/eventlite/authservice/entity/` using JPA annotations (`@Entity`, `@Table`, `@Id`, `@GeneratedValue`, `@Column`) and Lombok (`@Data`, `@NoArgsConstructor`, `@AllArgsConstructor`) to map to the existing `auth_schema.users` table (including the `name` column added previously). Ensured Java types match DB column types (e.g., `Integer` for `id`).
+*   **Status:** Basic Spring Boot project structure for `auth-service` is created, configured with dependencies, placed correctly in the monorepo, and committed to the `main` branch. The `User` entity representing the database table is defined. Ready to implement the `UserRepository` interface.
+*   **Next:** I will Create Spring Data JPA `UserRepository`.
+
+---
