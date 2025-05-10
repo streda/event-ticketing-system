@@ -1,5 +1,5 @@
 # Development Journal - EventLite
-
+---
 **Fri Apr 25, 2025**
 
 *   **Goal:** Setup basic auth-service backend.
@@ -12,7 +12,7 @@
 *   **Problem:** Ran into `dotenv` loading issues, fixed by moving `import 'dotenv/config'` to top of `server.js`.
 *   **Problem:** Debugged database connection success message showing `[default/unknown]`; fixed by adjusting logging in `server.js` start function.
 *   **Status:** Auth service runs, connects to DB, migration applied. Ready for direct API testing.
-
+---
 
 **Thu May 1, 2025**
 
@@ -24,7 +24,7 @@
 *   Added basic MUI components (`TextField`, `Button`) to `LoginForm.tsx` and `RegisterForm.tsx`.
 *   **Problem:** Debugged `RegisterForm` not looking styled; fixed by correcting component rendering in `RegisterPage.tsx`.
 *   **Status:** Basic Login/Register forms rendering with MUI. Next: Wire up Redux state & API calls.
-
+---
 
 **Fri May 2, 2025**
 * **Goal:** Verifying API Calls & End-to-End Flow.
@@ -67,5 +67,25 @@
     *   **Created `User` Entity:** Defined the `User.java` class in `src/main/java/com/eventlite/authservice/entity/` using JPA annotations (`@Entity`, `@Table`, `@Id`, `@GeneratedValue`, `@Column`) and Lombok (`@Data`, `@NoArgsConstructor`, `@AllArgsConstructor`) to map to the existing `auth_schema.users` table (including the `name` column added previously). Ensured Java types match DB column types (e.g., `Integer` for `id`).
 *   **Status:** Basic Spring Boot project structure for `auth-service` is created, configured with dependencies, placed correctly in the monorepo, and committed to the `main` branch. The `User` entity representing the database table is defined. Ready to implement the `UserRepository` interface.
 *   **Next:** I will Create Spring Data JPA `UserRepository`.
+
+---
+**Fri May 9, 2025**
+*   **Goal:** Define Data Transfer Objects (DTOs) for the Spring Boot `auth-service`.
+*   **Actions:**
+    *   Created a new package `com.eventlite.authservice.dto`.
+    *   Implemented the following DTO classes:
+        *   **`RegisterRequestDto.java`**: Defines the expected JSON payload for user registration requests (`name`, `email`, `password`). Includes Jakarta Bean Validation annotations (`@NotBlank`, `@Email`, `@Size`) for automatic request validation by Spring Boot.
+        *   **`LoginRequestDto.java`**: Defines the expected JSON payload for user login requests (`email`, `password`). Includes validation annotations.
+        *   **`UserDto.java`**: Represents a "safe" view of user data to be included in API responses (contains `id`, `name`, `email`, `createdAt`; notably excludes `passwordHash`).
+        *   **`AuthResponseDto.java`**: Defines the structure of the JSON response for successful logins (contains `token`, `user` (as `UserDto`), and a `message`).
+        *   **`MessageResponseDto.java`**: A generic DTO for simple API message responses (e.g., for successful registration).
+    *   Used Lombok's `@Data` (and `@NoArgsConstructor`, `@AllArgsConstructor` where appropriate) for boilerplate reduction in DTOs.
+*   **DTOs are important to be implemented at this stage because:**
+    *   **API Contract Definition:** To establish a clear and typed contract for the data exchanged between the frontend/client and the `auth-service` API endpoints.
+    *   **Decoupling:** To separate the API's data structure from the internal `User` entity structure, preventing accidental exposure of sensitive fields (like `passwordHash`) and making the API more resilient to internal entity changes.
+    *   **Request Validation:** To leverage Spring Boot's built-in validation capabilities by annotating DTO fields, leading to cleaner controller logic.
+    *   **Preparation for Service & Controller:** These DTOs will serve as the input parameters and return types for methods in the upcoming `AuthService` and `AuthController` layers, ensuring type safety and clear data flow.
+*   **Status:** DTOs for authentication request and response payloads are defined. The project is prepared for implementing the service layer logic.
+*   **Next:** Implement `AuthService.java`.
 
 ---
